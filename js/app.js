@@ -100,11 +100,16 @@
 	];
 	
 	
-	// on document.ready, initialize
+	// 
+	
+	/**
+	 * on document.ready
+	 *
+	 * Initialize, setting bindings to buttons and keyboard
+	 * 
+	 **/
 	$(document).ready(function() {
-		console.log("dom ready, initializing...");
-		
-		fillUpButtons();
+		log("dom ready, initializing...");
 		
 		// bind button clicks
 		$("#div-katakana button").on("click", function() {
@@ -135,12 +140,15 @@
 		var parsed = parseMantra(mantraTest);
 		*/
 		
-		console.log(
-			
-		);
 	});
 	
 	
+	/**
+	 * refresh();
+	 *
+	 * Display and recalculate the new mantra
+	 * 
+	 **/
 	var refresh = function() {
 		// update view
 		updateMantraView(mantraInput);
@@ -164,8 +172,7 @@
 				window.MANTRAS.prefix[chain.prefix]
 			);
 		});
-		console.log("final mantra:");
-		console.log(finalMantra);
+		log(finalMantra);
 		
 		if(finalMantra === undefined)
 			return null;
@@ -190,13 +197,22 @@
 	};
 	
 	
+	/**
+	 * modifyMantra();
+	 *
+	 * Applies a new prefix or sets a base to a mantra
+	 * Called for every additional word to modify the base 
+	 * 
+	 * Returns the modified mantra
+	 *
+	 **/
 	var modifyMantra = function(fMantra, base, prefix) {
-		console.log(base);
-		console.log(prefix);
+		log(base);
+		log(prefix);
 		
 		// if mantra is empty, take base and slap it in mantra
 		if (fMantra === null) {
-			fMantra = base
+			fMantra = $.extend({}, base);
 		} else {
 			
 			// element from base can be modified
@@ -219,10 +235,9 @@
 				fMantra.statEffect = base.statEffect;
 			}
 			
-			
 			// ignore all modifiers if type=2???
 			if((fMantra.type === 2) || (base.type === 2)) {
-				console.log("TYPE 2 should ignore everything else");
+				log("TYPE 2 should ignore everything else");
 			} else {
 				// apply prefix MP and power modifiers
 				fMantra.mpCost += prefix.mpCost;
@@ -235,7 +250,7 @@
 	
 	
 	/**
-	 * parseMantra
+	 * parseMantra();
 	 *
 	 * Parses a mantra from the end, obtaining all of its components
 	 * 
@@ -245,11 +260,11 @@
 	var parseMantra = function(mantra) {
 		// if length=0, nothing to parse
 		if(mantra.length==0) {
-			console.log("length=0");
+			log("length=0");
 			return null;
 		};
 		
-		console.log("parsing mantra...");
+		log("parsing mantra...");
 		
 		// start parsing
 		// copy to new array trimming the 0s
@@ -259,7 +274,7 @@
 				eMantra.push(mantra[i]);
 		};
 		
-		console.log(eMantra);
+		log(eMantra);
 
 		var mantraSegments = [];
 		
@@ -306,6 +321,8 @@
 	};
 	
 	
+	// Other minor functions
+	
 	var updateMantraView = function(mantra) {
 		$("#mantra").html(mantraToString(mantra));
 	};
@@ -313,7 +330,6 @@
 	
 	var mantraToString = function(mantra) {
 		var output = "";
-		console.log(mantra);
 		$.each(mantra, function(index, charIndex) {
 			if(charIndex) {
 				var char = $.grep(character, function(e) {
@@ -325,18 +341,10 @@
 		return output;
 	};
 	
-	
-	var fillUpButtons = function() {
-		var $kata = $("#div-katakana");
-		
-		$.each(character, function(index, obj) {
-			var $btn = $("<button/>");
-			$btn.html(obj.char);
-			$btn.attr("data-id", obj.id);
-			$kata.append($btn);
-		});
-		
+	var log = function(message) {
+		console.log(message);
 	};
+	
 	
 })(window, jQuery, undefined);
 

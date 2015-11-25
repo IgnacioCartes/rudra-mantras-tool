@@ -61,6 +61,11 @@ button {
 	width: 44px;
 }
 
+.no-btn {
+	display: inline-block;
+	margin: 2px;
+	width: 44px;
+}
 
 
 
