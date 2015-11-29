@@ -61,6 +61,10 @@ button {
 	width: 44px;
 }
 
+td {
+	padding-right: 20px;
+}
+
 .no-btn {
 	display: inline-block;
 	margin: 2px;
