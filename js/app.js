@@ -222,7 +222,8 @@
 		// $C0/D697
 		var mpCostMod = function() {
 			fMantra.mpCost += prefix.mpCost;
-			if(fMantra.mpCost < 1) fMantra.mpCost = 1;
+			// FIX - due to an oversight in the code (most likely) the MP cost CAN be 0 at this point (it will be corrected later though)
+			if(fMantra.mpCost < 0) fMantra.mpCost = 1;
 			if(fMantra.mpCost > 63) fMantra.mpCost = 63;
 		};
 		
