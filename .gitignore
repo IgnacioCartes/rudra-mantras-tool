@@ -1,0 +1,8 @@
+# MacOS hidden files
+.DS_Store
+
+# GIMP files
+*.xcf
+
+# Old files folder
+old/

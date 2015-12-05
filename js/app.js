@@ -414,9 +414,18 @@
 	var setButtons = function() {
 		$div = $("#div-katakana");
 	
-		for(var i=122;i<204;i++) {
+		for(var i = 122; i < 204; i++) {
+			// find button
 			var $btn = $div.find("[data-id=" + i + "]");
+			
+			// add image
 			$btn.html('<img src="assets/' + i + '.png"/>');
+			
+			// set correct title (romanization)
+			var char = $.grep(character, function(e) {
+				return e.id === i;
+			})[0].char;
+			$btn.attr("title", char);
 		}
 	};
 	
