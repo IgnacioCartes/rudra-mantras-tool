@@ -165,7 +165,7 @@
 		$.each(parsed, function(index, chain) {
 			// display each part
 			var $li = $("<li/>");
-			$li.html(mantraToString(chain.chain));
+			$li.html(mantraToHTML(chain.chain));
 			$("#words").prepend($li);
 			
 			// modify mantra
@@ -433,7 +433,8 @@
 	// Other minor functions
 	
 	var updateMantraView = function(mantra) {
-		$("#mantra").html(mantraToString(mantra));
+		$("#mantra").html(mantraToHTML(mantra));
+		
 	};
 	
 	
@@ -447,6 +448,18 @@
 				output+= char + " ";
 			};
 		});
+		return output;
+	};
+	
+	
+	var mantraToHTML = function(mantra) {
+		var output = "";
+		$.each(mantra, function(index, charIndex) {
+			if(charIndex) {
+				output += '<img src="assets/' + charIndex + '.png"/>';
+			};
+		});
+		console.log(output);
 		return output;
 	};
 	
