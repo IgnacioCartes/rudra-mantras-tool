@@ -111,6 +111,9 @@
 	$(document).ready(function() {
 		log("dom ready, initializing...");
 		
+		// do buttons
+		setButtons();
+		
 		// bind button clicks
 		$("#div-katakana button").on("click", function() {
 			var posZero = mantraInput.indexOf(0);
@@ -397,6 +400,24 @@
 		// entire mantra parsed
 		return(mantraSegments);
 		
+	};
+	
+	
+	/**
+	* setButtons();
+	*
+	* Fills up buttons with the kana symbols (images)
+	* 
+	* null return
+	* 
+	**/
+	var setButtons = function() {
+		$div = $("#div-katakana");
+	
+		for(var i=122;i<204;i++) {
+			var $btn = $div.find("[data-id=" + i + "]");
+			$btn.html('<img src="assets/' + i + '.png"/>');
+		}
 	};
 	
 	
