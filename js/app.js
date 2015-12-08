@@ -162,19 +162,48 @@
 		
 		// process pieces
 		$("#words").empty();
-		$.each(parsed, function(index, chain) {
-			// display each part
-			var $li = $("<li/>");
-			$li.html(mantraToHTML(chain.chain));
-			$("#words").prepend($li);
-			
+		$.each(parsed, function(index, chain) {			
 			// modify mantra
-			console.log(chain.base, chain.prefix);
-			finalMantra = modifyMantra(
+			//console.log(chain.base, chain.prefix);
+			response = modifyMantra(
 				finalMantra,
 				window.MANTRAS.base[chain.base],
 				window.MANTRAS.prefix[chain.prefix]
 			);
+			
+			finalMantra = response.mantra;
+			
+			// display each part
+			var $li = $("<li/>");
+			var $wordInfoList = $('<ul class="word-info"/>');
+			
+			// create word info list
+			$.each(response.ops, function(i, op) {
+				var key = Object.keys(op)[0];
+				if(key == "base") {
+					// list all properties
+					$wordInfoList.append("<li><b>Base</b></li>");
+					$wordInfoList.append("<li><b>Type</b>: " + typeToString(finalMantra.type) + "</li>");
+					$wordInfoList.append("<li><b>Stat</b>: " + statToString(finalMantra.stat) + "</li>");
+					$wordInfoList.append("<li><b>Status</b>: " + statusToString(finalMantra.status, finalMantra.status2) + "</li>");
+					$wordInfoList.append("<li><b>Power</b>: " + finalMantra.power + "</li>");
+					$wordInfoList.append("<li><b>MP Cost</b>: " + finalMantra.mpCost + "</li>");
+					$wordInfoList.append("<li><b>Element</b>: " + elementToString(finalMantra.element) + "</li>");
+					$wordInfoList.append("<li><b>Targetting</b>: " + targetingToString(finalMantra.targeting) + "</li>");
+				} else {
+					// show mod
+					var $item = $("<li/>");
+					$item.html("<b>" + key + ":</b> " + op[key]);
+					$wordInfoList.append($item);
+				};
+			});
+			
+			// append elements to main word list
+			$li.html(mantraToHTML(chain.chain));
+			$li.append($wordInfoList);
+			
+			$("#words").append($li);	// read from top to bottom
+			//$("#words").prepend($li);	// read from bottom to top
 		});
 		
 		if(finalMantra === undefined)
@@ -207,13 +236,15 @@
 	 * Applies a new prefix or sets a base to a mantra
 	 * Called for every additional word to modify the base 
 	 * 
-	 * Returns the modified mantra
+	 * Returns and object with:
+	 * - mantra: the modified mantra
+	 * - ops: array with the operations performed to the mantra
 	 *
 	 **/
 	var modifyMantra = function(fMantra, base, prefix) {
 		
-		console.log(base);
-		console.log(prefix);
+		// keep track of operations done to mantra
+		var ops = [];
 		
 		// misc functions
 		// $C0/D7E6
@@ -228,6 +259,7 @@
 			// FIX - due to an oversight in the code (most likely) the MP cost CAN be 0 at this point (it will be corrected later though)
 			if(fMantra.mpCost < 0) fMantra.mpCost = 1;
 			if(fMantra.mpCost > 63) fMantra.mpCost = 63;
+			if(prefix.mpCost) ops.push({mpCostMod: prefix.mpCost});
 		};
 		
 		// varies
@@ -235,6 +267,7 @@
 			fMantra.power += parseInt(prefix.power * (mult || 1));
 			if(fMantra.power < 0) fMantra.power = 0;
 			if(fMantra.power > 255) fMantra.power = 255;
+			if(prefix.power) ops.push({powerMod: prefix.power * (mult || 1)});
 		}
 		
 		// $C0/D6CF
@@ -259,16 +292,36 @@
 				fMantra.forms = base.forms;
 				fMantra.type = base.type;
 				fMantra.animation = base.animation;
+				ops.push(
+					{type: typeToString(base.type)},
+					{stat: statToString(base.statEffect)},
+					{status: statusToString(base.status, base.status2)}
+				);
 			};
 			
 			if(inh & 2) {
 				fMantra.power = base.power;
 				fMantra.accuracy = base.accuracy;
+				ops.push(
+					{power: base.power},
+					{accuracy: base.accuracy}
+				);
 			};
 			
-			if(inh & 4) fMantra.element = base.element;
-			if(inh & 8) fMantra.targeting = base.targeting;
-			if(inh & 16) fMantra.mpCost = base.mpCost;
+			if(inh & 4) { 
+				fMantra.element = base.element;
+				ops.push({element: elementToString(base.element)});
+			};
+			
+			if(inh & 8) {
+				fMantra.targeting = base.targeting;
+				ops.push({targeting: targetingToString(base.targeting)});
+			};
+			
+			if(inh & 16) {
+				fMantra.mpCost = base.mpCost;
+				ops.push({mpCost: base.mpCost});
+			};
 		};
 		
 		
@@ -276,11 +329,12 @@
 		// if mantra is empty, take base and slap it in mantra
 		if (fMantra === null) {
 			fMantra = $.extend({}, base);
+			ops.push({base: true});
 		} else {
 			
 			// prefix handling changes based on type
 			var type = (fMantra.type & 192) >> 6;
-			console.log("type: "+type)
+			console.log("type: " + type)
 			
 
 			// acc and mpcost mods run always unless its type 2 base
@@ -301,6 +355,7 @@
 				// opposite elements
 				else if(fMantra.element & oppositeElement(base.element)) {		
 					fMantra.power /= 2;
+					ops.push({opposingElementsPower: "x0.5"});
 				}
 				// neutral elements
 				else {
@@ -327,7 +382,11 @@
 				inheritanceMod();
 			
 		};
-		return fMantra;
+		
+		return {
+			mantra: fMantra,
+			ops: ops
+		};
 	};
 	
 	
@@ -459,7 +518,6 @@
 				output += '<img src="assets/' + charIndex + '.png"/>';
 			};
 		});
-		console.log(output);
 		return output;
 	};
 	
