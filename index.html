@@ -1,54 +1,99 @@
 <!doctype html>
 <html class="no-js" lang="">
-	<head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Rudra Mantras Tool</title>
-        <meta name="description" content="Web App to create and test mantras for the game Rudra No Hihou">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Rudra Mantras Tool</title>
+	<meta name="description" content="Web App to create and test mantras for the game Rudra No Hihou">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/normalize.min.css">
+	<link rel="stylesheet" href="css/main.css">
 
-        <!--[if lt IE 9]>
-            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-            <script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
-        <![endif]-->
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<script>window.html5 || document.write('<script src="js/vendor/html5shiv.js"><\/script>')</script>
+		<![endif]-->
 			
 	</head>
 	<body>
 		<div style="width: 520px; margin: 16px auto;">
-			<h1>Rudra no Hihou Mantra Tool<small> v0.4</small></h1>
-			<p>
-				Enter your mantra: <span id="mantra"></span> _
-			</p>
-			<div>
-				<table id="div-katakana">
+			<h1>Rudra no Hihou Mantra Tool<small> v0.5</small></h1>
+			<button id="btn-sel-j">Original</button>
+			<button id="btn-sel-e">English Patch</button>
+			<div id="content">
+				<p>
+					Enter your mantra: <span id="mantra"></span> _
+				</p>
+				<div>
+					<table id="div-katakana">
+						<tr>
+							<td>
+								<button data-id="123">A</button><button data-id="124">I</button><button data-id="125">U</button><button data-id="126">E</button><button data-id="127">O</button><br/>
+								<button data-id="128">KA</button><button data-id="129">KI</button><button data-id="130">KU</button><button data-id="131">KE</button><button data-id="132">KO</button><br/>
+								<button data-id="133">SA</button><button data-id="134">SHI</button><button data-id="135">SU</button><button data-id="136">SE</button><button data-id="137">SO</button><br/>
+								<button data-id="138">TA</button><button data-id="139">CHI</button><button data-id="140">TSU</button><button data-id="141">TE</button><button data-id="142">TO</button><br/>
+								<button data-id="143">NA</button><button data-id="144">NI</button><button data-id="145">NU</button><button data-id="146">NE</button><button data-id="147">NO</button><br/>
+								<button data-id="148">HA</button><button data-id="149">HI</button><button data-id="150">FU</button><button data-id="151">HE</button><button data-id="152">HO</button><br/>
+								<button data-id="153">MA</button><button data-id="154">MI</button><button data-id="155">MU</button><button data-id="156">ME</button><button data-id="157">MO</button><br/>
+								<button data-id="158">YA</button><div class="no-btn"></div><button data-id="159">YU</button><div class="no-btn"></div><button data-id="160">YO</button><br/>
+								<button data-id="161">RA</button><button data-id="162">RI</button><button data-id="163">RU</button><button data-id="164">RE</button><button data-id="165">RO</button>
+							</td>
+							<td>
+								<button data-id="166">WA</button><div class="no-btn"></div><button data-id="167">WO</button><div class="no-btn"></div><button data-id="168">N</button><br/>
+								<button data-id="169">GA</button><button data-id="170">GI</button><button data-id="171">GU</button><button data-id="172">GE</button><button data-id="173">GO</button><br/>
+								<button data-id="174">ZA</button><button data-id="175">ZI</button><button data-id="176">ZU</button><button data-id="177">ZE</button><button data-id="178">ZO</button><br/>
+								<button data-id="179">DA</button><button data-id="180">JI</button><button data-id="181">DU</button><button data-id="182">DE</button><button data-id="183">DO</button><br/>
+								<button data-id="184">BA</button><button data-id="185">BI</button><button data-id="186">BU</button><button data-id="187">BE</button><button data-id="188">BO</button><br/>
+								<button data-id="189">PA</button><button data-id="190">PI</button><button data-id="191">PU</button><button data-id="192">PE</button><button data-id="193">PO</button><br/>
+								<button data-id="203">VU</button><div class="no-btn"></div><button data-id="199">~tsu</button><div class="no-btn"></div><button data-id="122">-</button><br/>
+								<button data-id="200">~ya</button><div class="no-btn"></div><button data-id="201">~yu</button><div class="no-btn"></div><button data-id="202">~yo</button><br/>
+								<button data-id="194">~a</button><button data-id="195">~i</button><button data-id="196">~u</button><button data-id="197">~e</button><button data-id="198">~o</button>
+							</td>
+						</tr>
+					</table>
+					<br/>
+					<button id="btn-del">DEL</button>
+				</div>
+			</div>
+			<div id="content-e" style="display: none;">
+				<p>
+					Enter your mantra: <span id="mantra-e"></span> _
+				</p>
+				<table id="div-eng">
 					<tr>
 						<td>
-							<button data-id="123">A</button><button data-id="124">I</button><button data-id="125">U</button><button data-id="126">E</button><button data-id="127">O</button><br/>
-							<button data-id="128">KA</button><button data-id="129">KI</button><button data-id="130">KU</button><button data-id="131">KE</button><button data-id="132">KO</button><br/>
-							<button data-id="133">SA</button><button data-id="134">SHI</button><button data-id="135">SU</button><button data-id="136">SE</button><button data-id="137">SO</button><br/>
-							<button data-id="138">TA</button><button data-id="139">CHI</button><button data-id="140">TSU</button><button data-id="141">TE</button><button data-id="142">TO</button><br/>
-							<button data-id="143">NA</button><button data-id="144">NI</button><button data-id="145">NU</button><button data-id="146">NE</button><button data-id="147">NO</button><br/>
-							<button data-id="148">HA</button><button data-id="149">HI</button><button data-id="150">FU</button><button data-id="151">HE</button><button data-id="152">HO</button><br/>
-							<button data-id="153">MA</button><button data-id="154">MI</button><button data-id="155">MU</button><button data-id="156">ME</button><button data-id="157">MO</button><br/>
-							<button data-id="158">YA</button><div class="no-btn"></div><button data-id="159">YU</button><div class="no-btn"></div><button data-id="160">YO</button><br/>
-							<button data-id="161">RA</button><button data-id="162">RI</button><button data-id="163">RU</button><button data-id="164">RE</button><button data-id="165">RO</button>
-						</td>
-						<td>
-							<button data-id="166">WA</button><div class="no-btn"></div><button data-id="167">WO</button><div class="no-btn"></div><button data-id="168">N</button><br/>
-							<button data-id="169">GA</button><button data-id="170">GI</button><button data-id="171">GU</button><button data-id="172">GE</button><button data-id="173">GO</button><br/>
-							<button data-id="174">ZA</button><button data-id="175">ZI</button><button data-id="176">ZU</button><button data-id="177">ZE</button><button data-id="178">ZO</button><br/>
-							<button data-id="179">DA</button><button data-id="180">JI</button><button data-id="181">DU</button><button data-id="182">DE</button><button data-id="183">DO</button><br/>
-							<button data-id="184">BA</button><button data-id="185">BI</button><button data-id="186">BU</button><button data-id="187">BE</button><button data-id="188">BO</button><br/>
-							<button data-id="189">PA</button><button data-id="190">PI</button><button data-id="191">PU</button><button data-id="192">PE</button><button data-id="193">PO</button><br/>
-							<button data-id="203">VU</button><div class="no-btn"></div><button data-id="199">~tsu</button><div class="no-btn"></div><button data-id="122">-</button><br/>
-							<button data-id="200">~ya</button><div class="no-btn"></div><button data-id="201">~yu</button><div class="no-btn"></div><button data-id="202">~yo</button><br/>
-							<button data-id="194">~a</button><button data-id="195">~i</button><button data-id="196">~u</button><button data-id="197">~e</button><button data-id="198">~o</button>
+							<button data-id="230">A</button>
+							<button data-id="231">B</button>
+							<button data-id="232">C</button>
+							<button data-id="233">D</button>
+							<button data-id="234">E</button>
+							<button data-id="235">F</button>
+							<button data-id="236">G</button>
+							<button data-id="237">H</button>
+							<button data-id="238">I</button>
+							<button data-id="239">J</button>
+							<button data-id="240">K</button>
+							<button data-id="241">L</button>
+							<button data-id="242">M</button>
+							<button data-id="243">N</button>
+							<button data-id="244">O</button>
+							<button data-id="245">P</button>
+							<button data-id="246">Q</button>
+							<button data-id="247">R</button>
+							<button data-id="248">S</button>
+							<button data-id="249">T</button>
+							<button data-id="250">U</button>
+							<button data-id="251">V</button>
+							<button data-id="252">W</button>
+							<button data-id="253">X</button>
+							<button data-id="254">Y</button>
+							<button data-id="255">Z</button>
 						</td>
 					</tr>
 				</table>
+				<br/>
+				<button id="btn-del-e">DEL</button>
 			</div>
 			<div>
 				<h3>Words:</h3>
@@ -71,4 +116,4 @@
 		<script type="text/javascript" src="js/mantras.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
 	</body>
-</html>
+	</html>

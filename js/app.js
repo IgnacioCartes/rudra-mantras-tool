@@ -9,7 +9,10 @@
 	// mantra: six-character array(string)
 	var mantraTest = [179,156,193,162,135,189];
 	var mantraInput = [0, 0, 0, 0, 0, 0];
+	var mantraInputE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	
+	// J for original E for english patch
+	var mode = "J";
 	
 	// characters: collection of every single character
 	var character = [
@@ -116,6 +119,7 @@
 		
 		// bind button clicks
 		$("#div-katakana button").on("click", function() {
+			// add clicked character
 			var posZero = mantraInput.indexOf(0);
 			if (posZero > -1)
 				mantraInput[posZero] = parseInt(this.dataset.id);
@@ -123,27 +127,73 @@
 			refresh();
 		});
 		
-		// bind keypresses (for backspace)
-		$(document).on("keypress", function(e) {
-			if(e.which === 8) {
-				var posZero = mantraInput.indexOf(0);
-				
-				if (posZero === -1)
-					posZero = 6;
-				
-				if (posZero)
-					mantraInput[posZero - 1] = 0;
-				
-				refresh();
-				
-			};
+		// bind textbox changes
+		$("#div-eng button").on("click", function() {
+			// add clicked character
+			var posZero = mantraInputE.indexOf(0);
+			if (posZero > -1)
+				mantraInputE[posZero] = parseInt(this.dataset.id);
+			
+			refresh();
 		});
+		
+		// bind additional buttons
+		$("#btn-sel-j").on("click", function(e) {
+			setMode("J");
+		});
+
+		$("#btn-sel-e").on("click", function(e) {
+			setMode("E");
+		});
+		
+		$("#btn-del").on("click", function(e) {
+			var posZero = mantraInput.indexOf(0);
+				
+			if (posZero === -1)
+				posZero = 6;
+				
+			if (posZero)
+				mantraInput[posZero - 1] = 0;
+				
+			refresh();
+		});
+		
+		$("#btn-del-e").on("click", function(e) {
+			var posZero = mantraInputE.indexOf(0);
+				
+			if (posZero === -1)
+				posZero = 12;
+				
+			if (posZero)
+				mantraInputE[posZero - 1] = 0;
+				
+			refresh();
+		});
+		
 		
 		/*
 		var parsed = parseMantra(mantraTest);
 		*/
 		
 	});
+	
+
+	/**
+	 * setMode(mode);
+	 *
+	 * Sets original (japanese) or english patch mode
+	 * 
+	 **/
+	var setMode = function(nMode) {
+		mode = nMode;
+		if(mode == "J") {
+			$("#content").show();
+			$("#content-e").hide();
+		} else if(mode == "E"){
+			$("#content").hide();
+			$("#content-e").show();
+		};
+	};
 	
 	
 	/**
@@ -153,15 +203,24 @@
 	 * 
 	 **/
 	var refresh = function() {
+		// get proper mantra depending on current mode
+		var cModeMantra = (mode == "J" ? mantraInput : mantraInputE);
+
 		// update view
-		updateMantraView(mantraInput);
+		updateMantraView(cModeMantra);
 		
 		// parse mantra
-		var parsed = parseMantra(mantraInput);
+		var parsed = parseMantra(cModeMantra);//(mantraInput);
 		var finalMantra = null;
 		
 		// process pieces
 		$("#words").empty();
+		
+		console.log("parsed.length = " + parsed.length);
+		console.log(parsed);
+		if(parsed.length == 0)
+			return null;
+		
 		$.each(parsed, function(index, chain) {			
 			// modify mantra
 			//console.log(chain.base, chain.prefix);
@@ -414,19 +473,29 @@
 			if (mantra[i] !== 0)
 				eMantra.push(mantra[i]);
 		};
-		
 		log(eMantra);
 
 		var mantraSegments = [];
+		
+		// what library are we using?
+		var library = (mode == "J" ? window.MANTRAS.library : window.MANTRAS.library_e);
 		
 		// run through mantra finding chain matches (from the end)
 		do {
 			var match = {chain: []};
 		
 			// find longest chain of characters that matches
-			$.each(window.MANTRAS.library, function(index, chain) {
-			
+			$.each(library, function(index, chain) {
 				var thisChain = chain.chain;
+				
+				// convert chain to array if needed
+				if (mode == "E") {
+					//console.log(thisChain);
+					thisChain = thisChain.split('');
+					for(i = 0; i < thisChain.length; i++) {
+						thisChain[i] = thisChain[i].charCodeAt(0) + 165;
+					};
+				};
 			
 				// only check if mantra isn't shorter than chain
 				if(thisChain.length <= eMantra.length) {
@@ -441,15 +510,18 @@
 				
 					// if we have a match, compare and keep longest chain
 					if (is_same) {
-						if(match.chain.length < eChain.length)
-							match = chain;
+						if(match.chain.length < eChain.length) {
+							match = $.extend({}, chain);
+							match.chain = thisChain;
+						};
 					};
 				
 				};
 			
 			});
 			
-			mantraSegments.push(match);
+			if(match.chain.length > 0)
+				mantraSegments.push(match);
 			
 			// strip matched chain from mantra
 			eMantra = eMantra.slice(0, 0 - match.chain.length);
@@ -492,8 +564,11 @@
 	// Other minor functions
 	
 	var updateMantraView = function(mantra) {
-		$("#mantra").html(mantraToHTML(mantra));
-		
+		if(mode=="J") {
+			$("#mantra").html(mantraToHTML(mantra));
+		} else {
+			$("#mantra-e").html(mantraToHTML(mantra));
+		};
 	};
 	
 	
@@ -513,9 +588,14 @@
 	
 	var mantraToHTML = function(mantra) {
 		var output = "";
+		console.log(mantra);
 		$.each(mantra, function(index, charIndex) {
 			if(charIndex) {
-				output += '<img src="assets/' + charIndex + '.png"/>';
+				if (mode == "J") {
+					output += '<img src="assets/' + charIndex + '.png"/>';
+				} else {
+					output += String.fromCharCode(charIndex - 165);
+				};
 			};
 		});
 		return output;
